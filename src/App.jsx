@@ -3,7 +3,7 @@ import axios from 'axios';
 import './App.css';
 import Dropdown from './components/Dropdown/Dropdown.jsx';
 import DropdownItem from './components/DropdownItem/DropdownItem.jsx';
-const ServerURL = 'http://localhost:5000'
+const ServerURL = process.env.SERVER_URL
 function App() {
   const [videoUrl, setVideoUrl] = useState('');
   const inputRef = useRef();
