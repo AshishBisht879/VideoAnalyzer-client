@@ -3,7 +3,7 @@ import axios from 'axios';
 import './App.css';
 import Dropdown from './components/Dropdown/Dropdown.jsx';
 import DropdownItem from './components/DropdownItem/DropdownItem.jsx';
-const ServerURL = process.env.SERVER_URL
+const ServerURL = process.env.REACT_APP_SERVER_URL
 function App() {
   const [videoUrl, setVideoUrl] = useState('');
   const inputRef = useRef();
@@ -11,7 +11,6 @@ function App() {
   const [progess, setProgess] = useState(0);
   const [uploadStatus, setUploadStatus] = useState();
   const [analysisData, setAnalysisData] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [pastAnalyzedVideos, setPastAnalyzedVideos] = useState([]);
   // const [selectedVideo, setSelectedVideo] = useState('');
   const [DropdownText,setDropDownText] = useState('Choose Video')
@@ -36,7 +35,6 @@ function App() {
       if (event.target.files && event.target.files.length > 0) {
         const file = event.target.files[0];
         setUploadedVideo(file)
-        // setLoading(true);
         setAnalysisData(null); // Clear the old analysis result
         setUploadStatus("Uploding");
         setDropDownText('Choose Video')
@@ -55,40 +53,9 @@ function App() {
         console.log("Video Upload Response", response)
         setUploadStatus("Done")
 
-        
         setTimeout(() => {
-          setUploadedVideo(null);
-        }, 7000); //set the uploadedVideo back to null after 5 seconds so it will remove the progress bar as well 
-        
-        // Simulate fetching analysis data
-        //   setTimeout(async () => {
-        //     const exampleAnalysisData = {
-        //       videoIntelligence: {
-        //         detectedTexts: ["Buy Now!"],
-        //         logos: ["Nike", "Adidas"]
-        //       },
-        //       audioTranscript: {
-        //         detectedBrandsGemini: ["Google", "Microsoft"],
-        //         detectedBrandsComprehend: ["Nike", "Adidas"]
-        //       }
-        //     };
-
-        //     // const newEntry = {
-        //     //   url: url,
-        //     //   name: file.name, // Use the file name for the video name
-        //     //   data: exampleAnalysisData
-        //     // };
-
-        //     try {
-        //       // const response = await axios.post('http://localhost:5000/records', newEntry);
-        //       // setPastAnalyzedVideos([...pastAnalyzedVideos, response.data]);
-        //       setAnalysisData(exampleAnalysisData);
-        //       setLoading(false);
-        //     } catch (error) {
-        //       console.error("There was an error uploading the video!", error);
-        //       setLoading(false);
-        //     }
-        //   }, 5000); // Simulated delay of 5 seconds
+          setUploadedVideo(null); // make the status bar of uploading video disapper after 7 seconds of uploading
+        }, 7000); 
       }
     }
     catch (e) {
@@ -166,9 +133,7 @@ function App() {
             </video>
           </div>
           <div className="analysis-container">
-            {loading ? (
-              <div className="loading-spinner"></div>
-            ) : (
+            {
               <>
                 <h1>Analysis Result:</h1>
                 {analysisData?(
@@ -217,7 +182,7 @@ function App() {
                 </>
                 ):(<p>No Analysis data available.</p>)}
               </>
-            )}
+            }
           </div>
         </div>
       )}
