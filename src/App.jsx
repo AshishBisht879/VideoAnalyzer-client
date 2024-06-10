@@ -106,7 +106,7 @@ function App() {
             <>
               {pastAnalyzedVideos.map((video, index) => (
                 <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
-                  {`${video.video_path.split('/')[1]}`}
+                  {/* {`${video.video_path.split('/')[1]}`} */}
                   <span className={`${video.status === 1 ? 'status status-green' : video.status===0 ? 'status status-orange' : 'status'}`}>{`${video.status?(video.status===1?"Done":video.status===0?"Analyzing":"Unknown"):"Unknown"}`}</span>
                 </DropdownItem>
               ))
