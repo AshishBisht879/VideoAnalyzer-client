@@ -69,7 +69,7 @@ function App() {
   };  
 
   const handleVideoSelect = async (video_data) => {
-    console.log("Video-data",video_data)
+    console.log("handleVideoSelect()",video_data)
     const selectedName = video_data.video_path;
     const selectedVideoData = pastAnalyzedVideos.find(video => video.video_path === selectedName);
     // setSelectedVideo(selectedName);
@@ -108,12 +108,11 @@ function App() {
             <>
               {pastAnalyzedVideos.map((video, index) => (
                 (video.video_path && 
-                <>
                 <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
                   {`${video.video_path.split('/')[1]}`}
                   <span className={`${video.status === 1 ? 'status status-green' : video.status===0 ? 'status status-orange' : 'status'}`}>{`${video.status?(video.status===1?"Done":video.status===0?"Analyzing":"Unknown"):"Unknown"}`}</span>
                 </DropdownItem>
-                </>)
+                )
               ))
               }
             </>
