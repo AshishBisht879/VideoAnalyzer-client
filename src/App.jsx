@@ -14,7 +14,7 @@ function App() {
   const [analysisData, setAnalysisData] = useState(null);
   const [pastAnalyzedVideos, setPastAnalyzedVideos] = useState([]);
   // const [selectedVideo, setSelectedVideo] = useState('');
-  const [DropdownText,setDropDownText] = useState('Choose Video')
+  const [DropdownText, setDropDownText] = useState('Choose Video')
 
   useEffect(() => {
     fetchPastAnalyzedVideos();
@@ -42,21 +42,26 @@ function App() {
         const formData = new FormData();
         formData.append("video", file)
 
+        try{
         const response = await axios.post(`${ServerURL}/upload`, formData, {
           headers: {
-            'Content-Type':'multipart/form-data'
+            'Content-Type': 'multipart/form-data'
           },
           onUploadProgress: (progressEvent) => {
             const percent = Math.round(progressEvent.loaded * 100) / progressEvent.total
             setProgess(percent)
           }
         })
-        console.log("Video Upload Response", response)
+        console.log("Video Upload Response", response.message)
         setUploadStatus("Done")
+      }catch(error){
+        console.log("!!!Error",error.message)
+        setUploadStatus("Error Uploading")
+      }
 
         setTimeout(() => {
           setUploadedVideo(null); // make the status bar of uploading video disapper after 7 seconds of uploading
-        }, 7000); 
+        }, 7000);
       }
     }
     catch (e) {
@@ -66,20 +71,43 @@ function App() {
         setUploadedVideo(null);
       }, 7000);
     }
-  };  
+  };
 
   const handleVideoSelect = async (video_data) => {
-    console.log("handleVideoSelect()",video_data)
-    const selectedName = video_data.video_path;
-    const selectedVideoData = pastAnalyzedVideos.find(video => video.video_path === selectedName);
-    // setSelectedVideo(selectedName);
-    const video_name = selectedName.split('/')[1]
-    setDropDownText(video_name)
-    const response = await axios.get(`${ServerURL}/getSignedUrl/${video_name}`);
-    console.log("Video Select Signed Response = ", response)
-    setVideoUrl(response.data.signedUrl);
-    console.log(selectedVideoData)
-    setAnalysisData(selectedVideoData);
+    try {
+      console.log("handleVideoSelect()", video_data)
+      if (!video_data.hasOwnProperty('video_path')) {
+        return
+      }
+      const selectedName = video_data.video_path;
+      const selectedVideoData = pastAnalyzedVideos.find(video => video.video_path === selectedName);
+      // setSelectedVideo(selectedName);
+      const video_name = selectedName.split('/')[1]
+      setDropDownText(video_name)
+      setAnalysisData(selectedVideoData);
+      console.log("selectedVideoData:",selectedVideoData)
+      try {
+        const response = await axios.get(`${ServerURL}/getSignedUrl/${video_name}`);
+        console.log("Video Select Signed Response = ", response)
+        if (response.status === 200) {
+          console.log("Setting Video URl...")
+          setVideoUrl(response.data.signedUrl);
+        }
+        else {
+          console.log("Not Success Response while generating signed URL", response.status)
+          setVideoUrl(null)
+        }
+      }
+      catch (error) {
+        console.log("Error Retriving Video Signed URL", error.message)
+        setVideoUrl(null)
+      }
+
+    }
+    catch (error) {
+      console.log("!!!Error", error.message)
+    }
+
   };
 
 
@@ -88,36 +116,36 @@ function App() {
       <header className="header">
         <h1 className="tagline">Video Analyzer Tool</h1>
       </header>
-        <div className="control-panel">
-          <div className="upload-btn">
-            <label htmlFor="videoUpload">Upload Video</label>
-            <input id="videoUpload" ref={inputRef} type="file" accept="video/*" onChange={handleVideoUpload} />
-          </div>
-          {uploadedVideo && (
-            <div className='file-info'>
-              <div>
-                <div>{uploadedVideo.name}</div>
-                <div style={{ color: "#FF5833" }}>{uploadStatus}...</div>
-                <div className='progress-bar'>
-                  <div className='progress' style={{ width: `${progess}%` }} />
-                </div>
+      <div className="control-panel">
+        <div className="upload-btn">
+          <label htmlFor="videoUpload">Upload Video</label>
+          <input id="videoUpload" ref={inputRef} type="file" accept="video/*" onChange={handleVideoUpload} />
+        </div>
+        {uploadedVideo && (
+          <div className='file-info'>
+            <div>
+              <div>{uploadedVideo.name}</div>
+              <div style={{ color: "#FF5833" }}>{uploadStatus}...</div>
+              <div className='progress-bar'>
+                <div className='progress' style={{ width: `${progess}%` }} />
               </div>
             </div>
-          )}
-          <Dropdown buttonText={DropdownText} content={
-            <>
-              {pastAnalyzedVideos.map((video, index) => (
-                (video.video_path && 
+          </div>
+        )}
+        <Dropdown buttonText={DropdownText} content={
+          <>
+            {pastAnalyzedVideos.map((video, index) => (
+              (video.video_path &&
                 <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
                   {`${video.video_path.split('/')[1]}`}
-                  <span className={`${video.status === 1 ? 'status status-green' : video.status===0 ? 'status status-orange' : 'status'}`}>{`${video.status?(video.status===1?"Done":video.status===0?"Analyzing":"Unknown"):"Unknown"}`}</span>
+                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${video.status ? (video.status === 1 ? "Done" : video.status === 0 ? "Analyzing" : "Unknown") : "Unknown"}`}</span>
                 </DropdownItem>
-                )
-              ))
-              }
-            </>
-          } />
-          {/* <select className="video-select" onChange={handleVideoSelect} value={selectedVideo}>
+              )
+            ))
+            }
+          </>
+        } />
+        {/* <select className="video-select" onChange={handleVideoSelect} value={selectedVideo}>
             <option value="" disabled>Select Past Analyzed Video</option>
             {pastAnalyzedVideos.map((video, index) => (
               <option key={index} value={video.filename}>
@@ -127,8 +155,8 @@ function App() {
               </option>
             ))}
           </select> */}
-        </div>
-      {(videoUrl && analysisData) && (
+      </div>
+      {(analysisData) && (
         <div className="content">
           <div className="video-container">
             <video controls className="video-player">
@@ -140,51 +168,51 @@ function App() {
             {
               <>
                 <h1>Analysis Result:</h1>
-                {analysisData?(
+                {analysisData ? (
                   <>
-                  <div className="analysis-column">
-                  <h3>Video Intelligence (Visual Text + Detected Brands):</h3>
-                  {analysisData.brands_video_gcp?(
-                  <ul>
-                    {/* {analysisData.brands_video_gcp.detectedTexts.map((text, index) => (
+                    <div className="analysis-column">
+                      <h3>Video Intelligence (Visual Text + Detected Brands):</h3>
+                      {analysisData.brands_video_gcp ? (
+                        <ul>
+                          {/* {analysisData.brands_video_gcp.detectedTexts.map((text, index) => (
                       <li key={index}>{text}</li>
                     ))} */}
-                    {Object.keys(analysisData.brands_video_gcp).map((logo, index) => (
-                      <li key={index}>{logo} - {(analysisData.brands_video_gcp[logo] * 100).toFixed(1) + '%'}</li>
-                    ))}
-                  </ul>
-                  ):(<p>Analyzing or Some Internal Error</p>)
-                    }
-                </div>
-                <div className="analysis-column">
-                  <h3>Gemini (Audio Transcript Brands):</h3>
-                  {analysisData.brands_audio.gemini_results?(<ul>
-                    {analysisData.brands_audio.gemini_results.map((brand, index) => (
-                      <li key={index}>{brand}</li>
-                    ))}
-                  </ul>):(<p>Analyzing or Some Internal Error</p>)}
-                  
-                </div>
-                <div className="analysis-column">
-                  <h3>Comprehend (Audio Transcript Brands):</h3>
-                  {analysisData.brands_audio.comprehend_results?(<ul>
-                    {
-                      analysisData.brands_audio.comprehend_results.map((brand, index) => (
-                        <li key={index}>{brand}</li>
-                      ))}
-                  </ul>):(<p>Analyzing or Some Internal Error</p>)}
-                </div>
-                <div className="analysis-column">
-                  <h3>Category (IAB Categorization):</h3>
-                  {analysisData.iab_category?(<ul>
-                    {analysisData.iab_category.category.map((brand, index) => (
-                      <li key={index}>{brand}</li>
-                    ))}
-                  </ul>):(<p>Analyzing or Some Internal Error</p>)}
-                  
-                </div>
-                </>
-                ):(<p>No Analysis data available.</p>)}
+                          {Object.keys(analysisData.brands_video_gcp).map((logo, index) => (
+                            <li key={index}>{logo} - {(analysisData.brands_video_gcp[logo] * 100).toFixed(1) + '%'}</li>
+                          ))}
+                        </ul>
+                      ) : (<p>Analyzing or Some Internal Error</p>)
+                      }
+                    </div>
+                    <div className="analysis-column">
+                      <h3>Gemini (Audio Transcript Brands):</h3>
+                      {analysisData.brands_audio.gemini_results ? (<ul>
+                        {analysisData.brands_audio.gemini_results.map((brand, index) => (
+                          <li key={index}>{brand}</li>
+                        ))}
+                      </ul>) : (<p>Analyzing or Some Internal Error</p>)}
+
+                    </div>
+                    <div className="analysis-column">
+                      <h3>Comprehend (Audio Transcript Brands):</h3>
+                      {analysisData.brands_audio.comprehend_results ? (<ul>
+                        {
+                          analysisData.brands_audio.comprehend_results.map((brand, index) => (
+                            <li key={index}>{brand}</li>
+                          ))}
+                      </ul>) : (<p>Analyzing or Some Internal Error</p>)}
+                    </div>
+                    <div className="analysis-column">
+                      <h3>Category (IAB Categorization):</h3>
+                      {analysisData.iab_category ? (<ul>
+                        {analysisData.iab_category.category.map((brand, index) => (
+                          <li key={index}>{brand}</li>
+                        ))}
+                      </ul>) : (<p>Analyzing or Some Internal Error</p>)}
+
+                    </div>
+                  </>
+                ) : (<p>No Analysis data available.</p>)}
               </>
             }
           </div>
