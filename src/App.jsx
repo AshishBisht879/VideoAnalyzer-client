@@ -52,7 +52,7 @@ function App() {
             setProgess(percent)
           }
         })
-        console.log("Video Upload Response", response.message)
+        console.log("Video Upload Response", response)
         setUploadStatus("Done")
       }catch(error){
         console.log("!!!Error",error.message)
@@ -76,7 +76,7 @@ function App() {
   const handleVideoSelect = async (video_data) => {
     try {
       console.log("handleVideoSelect()", video_data)
-      if (!video_data.hasOwnProperty('video_path')) {
+      if (!video_data.hasOwnProperty('video_path') || video_data.status!==1) {
         return
       }
       const selectedName = video_data.video_path;
@@ -138,7 +138,7 @@ function App() {
               (video.video_path &&
                 <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
                   {`${video.video_path.split('/')[1]}`}
-                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${video.status ? (video.status === 1 ? "Done" : video.status === 0 ? "Analyzing" : "Unknown") : "Unknown"}`}</span>
+                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (video.status === 1 ? "Done" : (video.status === 0 ? "Analyzing" : "Unknown")) : "Unknown"}`}</span>
                 </DropdownItem>
               )
             ))
@@ -159,7 +159,7 @@ function App() {
       {(analysisData) && (
         <div className="content">
           <div className="video-container">
-            <video controls className="video-player">
+            <video controls className="video-player" src={videoUrl}>
               <source src={videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
@@ -181,7 +181,7 @@ function App() {
                             <li key={index}>{logo} - {(analysisData.brands_video_gcp[logo] * 100).toFixed(1) + '%'}</li>
                           ))}
                         </ul>
-                      ) : (<p>Analyzing or Some Internal Error</p>)
+                      ) : (<p>No Results Found</p>)
                       }
                     </div>
                     <div className="analysis-column">
@@ -190,7 +190,7 @@ function App() {
                         {analysisData.brands_audio.gemini_results.map((brand, index) => (
                           <li key={index}>{brand}</li>
                         ))}
-                      </ul>) : (<p>Analyzing or Some Internal Error</p>)}
+                      </ul>) : (<p>No Results Found</p>)}
 
                     </div>
                     <div className="analysis-column">
@@ -200,7 +200,7 @@ function App() {
                           analysisData.brands_audio.comprehend_results.map((brand, index) => (
                             <li key={index}>{brand}</li>
                           ))}
-                      </ul>) : (<p>Analyzing or Some Internal Error</p>)}
+                      </ul>) : (<p>No Results Found</p>)}
                     </div>
                     <div className="analysis-column">
                       <h3>Category (IAB Categorization):</h3>
@@ -208,11 +208,11 @@ function App() {
                         {analysisData.iab_category.category.map((brand, index) => (
                           <li key={index}>{brand}</li>
                         ))}
-                      </ul>) : (<p>Analyzing or Some Internal Error</p>)}
+                      </ul>) : (<p>No Results Found</p>)}
 
                     </div>
                   </>
-                ) : (<p>No Analysis data available.</p>)}
+                ) : (<p>No Results Found</p>)}
               </>
             }
           </div>
