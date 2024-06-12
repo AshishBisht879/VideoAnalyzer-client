@@ -187,7 +187,7 @@ function getStatus(status_code)
                 <>
                   <div className="analysis-column">
                     <h3>Video Intelligence (Visual Text + Detected Brands):</h3>
-                    {analysisData.brands_video_gcp ? (
+                    {(analysisData.brands_video_gcp && Object.keys(analysisData.brands_video_gcp).length)? (
                       <ul>
                         {Object.keys(analysisData.brands_video_gcp).map((logo, index) => (
                           <li key={index}>{logo} - {(analysisData.brands_video_gcp[logo] * 100).toFixed(1) + '%'}</li>
@@ -197,7 +197,7 @@ function getStatus(status_code)
                   </div>
                   <div className="analysis-column">
                     <h3>Gemini (Audio Transcript Brands):</h3>
-                    {analysisData.brands_audio.gemini_results ? (<ul>
+                    {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.gemini_results).map(([brand,confidence], index) => (
                         <li key={index}>{brand} - {(confidence* 100).toFixed(1) + '%'}</li>
                       ))}
@@ -205,7 +205,7 @@ function getStatus(status_code)
                   </div>
                   <div className="analysis-column">
                     <h3>Comprehend (Audio Transcript Brands):</h3>
-                    {analysisData.brands_audio.comprehend_results ? (<ul>
+                    {(analysisData.brands_audio.comprehend_results  && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.comprehend_results).map(([brand,confidence], index) => (
                         <li key={index}>{brand} - {(confidence* 100).toFixed(1) + '%'}</li>
                       ))}
@@ -213,7 +213,7 @@ function getStatus(status_code)
                   </div>
                   <div className="analysis-column">
                     <h3>Category :</h3>
-                    {analysisData.final_categories ? (<ul>
+                    {(analysisData.final_categories && Object.keys(analysisData.final_categories).length )? (<ul>
                       {analysisData.final_categories.map((brand, index) => (
                         <li key={index}>{brand}</li>
                       ))}

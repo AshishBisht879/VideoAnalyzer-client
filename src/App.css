@@ -84,14 +84,15 @@ body {
     border-color: #61dafb;
   }
   
-  .content {
-    display: flex;
-    justify-content: space-around;
-    align-items: flex-start;
-    margin: 20px;
-    transition: transform 550ms ease-in-out;
-    opacity: 500ms ease-in-out;
-  }
+.content {
+  display: flex;
+  flex-wrap: wrap;  /* Key for vertical alignment on small screens */
+  justify-content: space-around;
+  align-items: flex-start;
+  margin: 20px;
+  transition: transform 550ms ease-in-out, opacity 500ms ease-in-out;
+}
+
   
   .video-container {
     width: 45%; /* Adjust video container width */
@@ -202,7 +203,7 @@ body {
     background-color: #dddddd;
     color: white;
     margin-left: 8px;
-    width: 70px
+    width: 80px
   }
 
   .status-green{
