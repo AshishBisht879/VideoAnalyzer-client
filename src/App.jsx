@@ -45,7 +45,7 @@ function getStatus(status_code)
       oldStateResponse = JSON.parse(JSON.stringify(newVideos)) //deep copy new response to compare for next future response for state change notification
       // Pop Status Notification Bar
       changedVideoState?.forEach(video => {
-        showStatusMessage({message:`Video ${video.video_path.split('/')[1]} status changed to ${getStatus(video.new)}`,status:video.new});
+        showStatusMessage({video_path:video.video_path,message:`Video ${video.video_path.split('/')[1]} status changed to ${getStatus(video.new)}`,status:video.new});
       });
       
       setPastAnalyzedVideos(newVideos);
@@ -85,7 +85,7 @@ function getStatus(status_code)
           });
           console.log("Video Upload Response", response);
           setUploadStatus("Done");
-          showStatusMessage({message:`Video ${file.name} uploaded and Analyzing.. Select Video from Dropdown to see result`,status:0});
+          showStatusMessage({message:`Video ${file.name} Uploaded and Analyzing ... `,status:0});
         } catch (error) {
           console.log("!!!Error", error.message);
           setUploadStatus("Error Uploading");
@@ -170,6 +170,8 @@ function getStatus(status_code)
         } />
       </div>
       {statusMessage.message && <div className={statusMessage?.status===1?`status_field_green status_field`:`status_field_orange status_field`}>{statusMessage?.message}
+      {statusMessage.status === 1 && <span className='link' onClick={()=>{handleVideoSelect({video_path:statusMessage.video_path,status:statusMessage.status})}}>View Results</span>}
+      {statusMessage.status === 0 && <span className="loading-spinner"></span>}
       <span className="close-button" onClick={() => setStatusMessage({})}>×</span>
       </div>}
       {(analysisData) && (
