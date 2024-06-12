@@ -1,10 +1,11 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './App.css';
 import Dropdown from './components/Dropdown/Dropdown.jsx';
 import DropdownItem from './components/DropdownItem/DropdownItem.jsx';
-const ServerURL = process.env.REACT_APP_SERVER_URL
+
+const ServerURL = process.env.REACT_APP_SERVER_URL;
+
 function App() {
   const [videoUrl, setVideoUrl] = useState('');
   const inputRef = useRef();
@@ -13,60 +14,90 @@ function App() {
   const [uploadStatus, setUploadStatus] = useState();
   const [analysisData, setAnalysisData] = useState(null);
   const [pastAnalyzedVideos, setPastAnalyzedVideos] = useState([]);
-  // const [selectedVideo, setSelectedVideo] = useState('');
-  const [DropdownText, setDropDownText] = useState('Choose Video')
-
+  const [DropdownText, setDropDownText] = useState('Choose Video');
+  const [statusMessage, setStatusMessage] = useState({});
+  let oldStateResponse =[]  //it will hold the previous response data from /records for comparing the state
   useEffect(() => {
     fetchPastAnalyzedVideos();
-    const intervalID = setInterval(fetchPastAnalyzedVideos, 4000) //called every 4 seconds
-    return () => clearInterval(intervalID)
+    const intervalID = setInterval(fetchPastAnalyzedVideos, 4000); // called every 4 seconds
+    return () => clearInterval(intervalID);
   }, []);
 
+
+function getStatus(status_code)
+{
+  return status_code===0?"Analyzing":(status_code===1?"Done":"Unknow")
+}
   const fetchPastAnalyzedVideos = async () => {
     try {
+
       const response = await axios.get(`${ServerURL}/records`);
-      setPastAnalyzedVideos(response.data);
+      const newVideos = response.data;
+      // Find records where status changed 
+      const changedVideoState = [];
+      oldStateResponse?.forEach(oldRecord => {
+        const newRecord = newVideos?.find(record => record._id === oldRecord._id);
+        if (newRecord && oldRecord.status !== newRecord.status) {
+          changedVideoState.push({ video_path: newRecord.video_path, old: oldRecord.status, new: newRecord.status });
+        }
+      });
+      console.log(changedVideoState)
+
+      oldStateResponse = JSON.parse(JSON.stringify(newVideos)) //deep copy new response to compare for next future response for state change notification
+      // Pop Status Notification Bar
+      changedVideoState?.forEach(video => {
+        showStatusMessage({message:`Video ${video.video_path.split('/')[1]} status changed to ${getStatus(video.new)}`,status:video.new});
+      });
+      
+      setPastAnalyzedVideos(newVideos);
     } catch (error) {
       console.error("There was an error fetching the videos!", error);
     }
+  };
+
+  const showStatusMessage = (message) => {
+    setStatusMessage(message);
+    // setTimeout(() => {
+    //   setStatusMessage('');
+    // }, 9000); // Hide the message after 
   };
 
   const handleVideoUpload = async (event) => {
     try {
       if (event.target.files && event.target.files.length > 0) {
         const file = event.target.files[0];
-        setUploadedVideo(file)
+        setUploadedVideo(file);
         setAnalysisData(null); // Clear the old analysis result
-        setUploadStatus("Uploding");
-        setDropDownText('Choose Video')
+        setUploadStatus("Uploading");
+        setDropDownText('Choose Video');
         const formData = new FormData();
-        formData.append("video", file)
+        formData.append("video", file);
 
-        try{
-        const response = await axios.post(`${ServerURL}/upload`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          onUploadProgress: (progressEvent) => {
-            const percent = Math.round(progressEvent.loaded * 100) / progressEvent.total
-            setProgess(percent)
-          }
-        })
-        console.log("Video Upload Response", response)
-        setUploadStatus("Done")
-      }catch(error){
-        console.log("!!!Error",error.message)
-        setUploadStatus("Error Uploading")
-      }
+        try {
+          const response = await axios.post(`${ServerURL}/upload`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress: (progressEvent) => {
+              const percent = Math.round(progressEvent.loaded * 100) / progressEvent.total;
+              setProgess(percent);
+            }
+          });
+          console.log("Video Upload Response", response);
+          setUploadStatus("Done");
+          showStatusMessage({message:`Video ${file.name} uploaded and Analyzing.. Select Video from Dropdown to see result`,status:0});
+        } catch (error) {
+          console.log("!!!Error", error.message);
+          setUploadStatus("Error Uploading");
+        }
 
         setTimeout(() => {
-          setUploadedVideo(null); // make the status bar of uploading video disapper after 7 seconds of uploading
+          setUploadedVideo(null); // make the status bar of uploading video disappear after 7 seconds of uploading
         }, 7000);
       }
-    }
-    catch (e) {
-      console.log(e)
-      setUploadStatus("Error")
+    } catch (e) {
+      console.log(e);
+      setUploadStatus("Error");
       setTimeout(() => {
         setUploadedVideo(null);
       }, 7000);
@@ -75,41 +106,34 @@ function App() {
 
   const handleVideoSelect = async (video_data) => {
     try {
-      console.log("handleVideoSelect()", video_data)
-      if (!video_data.hasOwnProperty('video_path') || video_data.status!==1) {
-        return
+      console.log("handleVideoSelect()", video_data);
+      if (!video_data.hasOwnProperty('video_path') || video_data.status !== 1) {
+        return;
       }
       const selectedName = video_data.video_path;
       const selectedVideoData = pastAnalyzedVideos.find(video => video.video_path === selectedName);
-      // setSelectedVideo(selectedName);
-      const video_name = selectedName.split('/')[1]
-      setDropDownText(video_name)
+      const video_name = selectedName.split('/')[1];
+      setDropDownText(video_name);
       setAnalysisData(selectedVideoData);
-      console.log("selectedVideoData:",selectedVideoData)
+      console.log("selectedVideoData:", selectedVideoData);
       try {
         const response = await axios.get(`${ServerURL}/getSignedUrl/${video_name}`);
-        console.log("Video Select Signed Response = ", response)
+        console.log("Video Select Signed Response = ", response);
         if (response.status === 200) {
-          console.log("Setting Video URl...")
+          console.log("Setting Video URL...");
           setVideoUrl(response.data.signedUrl);
+        } else {
+          console.log("Not Success Response while generating signed URL", response.status);
+          setVideoUrl(null);
         }
-        else {
-          console.log("Not Success Response while generating signed URL", response.status)
-          setVideoUrl(null)
-        }
+      } catch (error) {
+        console.log("Error Retrieving Video Signed URL", error.message);
+        setVideoUrl(null);
       }
-      catch (error) {
-        console.log("Error Retriving Video Signed URL", error.message)
-        setVideoUrl(null)
-      }
-
+    } catch (error) {
+      console.log("!!!Error", error.message);
     }
-    catch (error) {
-      console.log("!!!Error", error.message)
-    }
-
   };
-
 
   return (
     <div className="App">
@@ -138,24 +162,16 @@ function App() {
               (video.video_path &&
                 <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
                   {`${video.video_path.split('/')[1]}`}
-                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (video.status === 1 ? "Done" : (video.status === 0 ? "Analyzing" : "Unknown")) : "Unknown"}`}</span>
+                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (getStatus(video.status)) : "Unknown"}`}</span>
                 </DropdownItem>
               )
-            ))
-            }
+            ))}
           </>
         } />
-        {/* <select className="video-select" onChange={handleVideoSelect} value={selectedVideo}>
-            <option value="" disabled>Select Past Analyzed Video</option>
-            {pastAnalyzedVideos.map((video, index) => (
-              <option key={index} value={video.filename}>
-                {video.filename.split('.')[0]}
-                {' - '}
-                {video.status}
-              </option>
-            ))}
-          </select> */}
       </div>
+      {statusMessage.message && <div className={statusMessage?.status===1?`status_field_green status_field`:`status_field_orange status_field`}>{statusMessage?.message}
+      <span className="close-button" onClick={() => setStatusMessage({})}>×</span>
+      </div>}
       {(analysisData) && (
         <div className="content">
           <div className="video-container">
@@ -165,56 +181,47 @@ function App() {
             </video>
           </div>
           <div className="analysis-container">
-            {
-              <>
-                <h1>Analysis Result:</h1>
-                {analysisData ? (
-                  <>
-                    <div className="analysis-column">
-                      <h3>Video Intelligence (Visual Text + Detected Brands):</h3>
-                      {analysisData.brands_video_gcp ? (
-                        <ul>
-                          {/* {analysisData.brands_video_gcp.detectedTexts.map((text, index) => (
-                      <li key={index}>{text}</li>
-                    ))} */}
-                          {Object.keys(analysisData.brands_video_gcp).map((logo, index) => (
-                            <li key={index}>{logo} - {(analysisData.brands_video_gcp[logo] * 100).toFixed(1) + '%'}</li>
-                          ))}
-                        </ul>
-                      ) : (<p>No Results Found</p>)
-                      }
-                    </div>
-                    <div className="analysis-column">
-                      <h3>Gemini (Audio Transcript Brands):</h3>
-                      {analysisData.brands_audio.gemini_results ? (<ul>
-                        {analysisData.brands_audio.gemini_results.map((brand, index) => (
-                          <li key={index}>{brand}</li>
+            <>
+              <h1>Analysis Result:</h1>
+              {analysisData ? (
+                <>
+                  <div className="analysis-column">
+                    <h3>Video Intelligence (Visual Text + Detected Brands):</h3>
+                    {analysisData.brands_video_gcp ? (
+                      <ul>
+                        {Object.keys(analysisData.brands_video_gcp).map((logo, index) => (
+                          <li key={index}>{logo} - {(analysisData.brands_video_gcp[logo] * 100).toFixed(1) + '%'}</li>
                         ))}
-                      </ul>) : (<p>No Results Found</p>)}
-
-                    </div>
-                    <div className="analysis-column">
-                      <h3>Comprehend (Audio Transcript Brands):</h3>
-                      {analysisData.brands_audio.comprehend_results ? (<ul>
-                        {
-                          analysisData.brands_audio.comprehend_results.map((brand, index) => (
-                            <li key={index}>{brand}</li>
-                          ))}
-                      </ul>) : (<p>No Results Found</p>)}
-                    </div>
-                    <div className="analysis-column">
-                      <h3>Category (IAB Categorization):</h3>
-                      {analysisData.iab_category ? (<ul>
-                        {analysisData.iab_category.category.map((brand, index) => (
-                          <li key={index}>{brand}</li>
-                        ))}
-                      </ul>) : (<p>No Results Found</p>)}
-
-                    </div>
-                  </>
-                ) : (<p>No Results Found</p>)}
-              </>
-            }
+                      </ul>
+                    ) : (<p>No Results Found</p>)}
+                  </div>
+                  <div className="analysis-column">
+                    <h3>Gemini (Audio Transcript Brands):</h3>
+                    {analysisData.brands_audio.gemini_results ? (<ul>
+                      {analysisData.brands_audio.gemini_results.map((brand, index) => (
+                        <li key={index}>{brand}</li>
+                      ))}
+                    </ul>) : (<p>No Results Found</p>)}
+                  </div>
+                  <div className="analysis-column">
+                    <h3>Comprehend (Audio Transcript Brands):</h3>
+                    {analysisData.brands_audio.comprehend_results ? (<ul>
+                      {analysisData.brands_audio.comprehend_results.map((brand, index) => (
+                        <li key={index}>{brand}</li>
+                      ))}
+                    </ul>) : (<p>No Results Found</p>)}
+                  </div>
+                  <div className="analysis-column">
+                    <h3>Category (IAB Categorization):</h3>
+                    {analysisData.iab_category ? (<ul>
+                      {analysisData.iab_category.category.map((brand, index) => (
+                        <li key={index}>{brand}</li>
+                      ))}
+                    </ul>) : (<p>No Results Found</p>)}
+                  </div>
+                </>
+              ) : (<p>No Results Found</p>)}
+            </>
           </div>
         </div>
       )}
