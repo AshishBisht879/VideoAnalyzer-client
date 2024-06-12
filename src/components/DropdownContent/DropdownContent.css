@@ -1,4 +1,5 @@
 .dropdown-content {
+    z-index: 100;
     position: absolute;
     min-width: 100%;
     display: flex;

@@ -119,16 +119,10 @@ body {
   }
   
   .loading-spinner {
-    border: 6px solid #f3f3f3;
-    border-top: 6px solid #3498db;
-    border-radius: 50%;
-    width: 17px;
-    height: 17px;
-    animation: spin 1s linear infinite;
-    margin: auto;
-    position: relative; /* Enable relative positioning for corner placement */
-    right:1rem; /* Position at right with slight offset */
-  }
+    width: 100px;
+    height: 100px;
+    } 
+
 
   .link {
     cursor: pointer;  /* Pointer cursor on hover */

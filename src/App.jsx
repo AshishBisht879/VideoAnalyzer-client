@@ -170,7 +170,7 @@ function App() {
       </div>
       {statusMessage.message && <div className={statusMessage?.status === 1 ? `status_field_green status_field` : `status_field_orange status_field`}>{statusMessage?.message}
         {statusMessage.status === 1 && <span className='link' onClick={() => { handleVideoSelect({ video_path: statusMessage.video_path, status: statusMessage.status }) }}>View Results</span>}
-        {statusMessage.status === 0 && <span className="loading-spinner"></span>}
+        {statusMessage.status === 0 && <span className="loading-spinner"><img style={{width:'100%'}}src="https://flinenergy.com/flin_css_js_font_images/images/loader.gif" alt="Loading..." /></span>}
         <span className="close-button" onClick={() => setStatusMessage({})}>×</span>
       </div>}
       {(analysisData) && (
