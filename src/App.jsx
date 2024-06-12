@@ -41,7 +41,6 @@ function getStatus(status_code)
           changedVideoState.push({ video_path: newRecord.video_path, old: oldRecord.status, new: newRecord.status });
         }
       });
-      console.log(changedVideoState)
 
       oldStateResponse = JSON.parse(JSON.stringify(newVideos)) //deep copy new response to compare for next future response for state change notification
       // Pop Status Notification Bar
@@ -50,6 +49,7 @@ function getStatus(status_code)
       });
       
       setPastAnalyzedVideos(newVideos);
+      
     } catch (error) {
       console.error("There was an error fetching the videos!", error);
     }
@@ -198,23 +198,23 @@ function getStatus(status_code)
                   <div className="analysis-column">
                     <h3>Gemini (Audio Transcript Brands):</h3>
                     {analysisData.brands_audio.gemini_results ? (<ul>
-                      {analysisData.brands_audio.gemini_results.map((brand, index) => (
-                        <li key={index}>{brand}</li>
+                      {Object.entries(analysisData.brands_audio.gemini_results).map(([brand,confidence], index) => (
+                        <li key={index}>{brand} - {(confidence* 100).toFixed(1) + '%'}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
                     <h3>Comprehend (Audio Transcript Brands):</h3>
                     {analysisData.brands_audio.comprehend_results ? (<ul>
-                      {analysisData.brands_audio.comprehend_results.map((brand, index) => (
-                        <li key={index}>{brand}</li>
+                      {Object.entries(analysisData.brands_audio.comprehend_results).map(([brand,confidence], index) => (
+                        <li key={index}>{brand} - {(confidence* 100).toFixed(1) + '%'}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>Category (IAB Categorization):</h3>
-                    {analysisData.iab_category ? (<ul>
-                      {analysisData.iab_category.category.map((brand, index) => (
+                    <h3>Category :</h3>
+                    {analysisData.final_categories ? (<ul>
+                      {analysisData.final_categories.map((brand, index) => (
                         <li key={index}>{brand}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
