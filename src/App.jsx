@@ -218,7 +218,7 @@ function App() {
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>Entities Deteciton (Audio Transcript Brands):</h3>
+                    <h3>Entities Detection (Audio Transcript Brands):</h3>
                     {(analysisData.brands_audio.comprehend_results && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.comprehend_results).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
