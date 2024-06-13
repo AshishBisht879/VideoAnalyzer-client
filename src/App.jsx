@@ -137,7 +137,7 @@ function App() {
   return (
     <div className="App">
       <header className="header">
-        <h1 className="tagline">Video Analyzer Tool</h1>
+        <h1 className="tagline">Ads Classification Tool</h1>
       </header>
       <div className="control-panel">
         <div className="upload-btn">
@@ -210,7 +210,7 @@ function App() {
                     ) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>Gemini (Audio Transcript Brands):</h3>
+                    <h3>LLM (Audio Transcript Brands):</h3>
                     {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.gemini_results).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
@@ -218,7 +218,7 @@ function App() {
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>Comprehend (Audio Transcript Brands):</h3>
+                    <h3>Entities Deteciton (Audio Transcript Brands):</h3>
                     {(analysisData.brands_audio.comprehend_results && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.comprehend_results).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
