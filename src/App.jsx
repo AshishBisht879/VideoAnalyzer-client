@@ -181,7 +181,7 @@ function App() {
               Your browser does not support the video tag.
             </video>
             <div className="analysis-column">
-              <h3>Overall Result:</h3>
+              <h3>Brand Composite Confidence Score :</h3>
               {(analysisData && analysisData.final_brands && Object.keys(analysisData.final_brands).length) ? (
                 <ul>
                   {Object.entries(analysisData.final_brands).map(([brand, confi], index) => (
@@ -200,7 +200,7 @@ function App() {
               {analysisData ? (
                 <>
                   <div className="analysis-column">
-                    <h3>Video Intelligence (Detected Brands/Logos):</h3>
+                    <h3>Video Intelligence (Logos: Detected Brands) :</h3>
                     {(analysisData.brands_video_gcp && Object.keys(analysisData.brands_video_gcp).length) ? (
                       <ul>
                         {Object.keys(analysisData.brands_video_gcp).map((logo, index) => (
@@ -210,15 +210,15 @@ function App() {
                     ) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                  <h3> Video Intelligence (Detected Text)::</h3>
-                    {(analysisData.brands_text && Object.keys(analysisData.brands_text).length) ? (<ul>
-                      {Object.entries(analysisData.brands_text).map(([brand, confidence], index) => (
+                  <h3> Video Intelligence (Text: Detected Brands) :</h3>
+                    {(analysisData.oct_text && Object.keys(analysisData.ocr_text).length) ? (<ul>
+                      {Object.entries(analysisData.ocr_text).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>LLM (Detected Brands):</h3>
+                    <h3>LLMs ( Detected Brands) :</h3>
                     {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.gemini_results).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
@@ -226,7 +226,7 @@ function App() {
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>Entities Detection (Detected Brands):</h3>
+                    <h3>Entities Detection (Detected Brands) :</h3>
                     {(analysisData.brands_audio.comprehend_results && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.comprehend_results).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
@@ -234,7 +234,7 @@ function App() {
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>Category :</h3>
+                    <h3>Category (IAB) :</h3>
                     {(analysisData.final_categories && Object.keys(analysisData.final_categories).length) ? (<ul>
                       {analysisData.final_categories.map((brand, index) => (
                         <li key={index}>{brand}</li>
