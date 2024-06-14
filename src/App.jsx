@@ -211,9 +211,9 @@ function App() {
                   </div>
                   <div className="analysis-column">
                   <h3> Video Intelligence (Text: Detected Brands) :</h3>
-                    {(analysisData.ocr_text && Object.keys(analysisData.ocr_text).length) ? (<ul>
-                      {Object.entries(analysisData.ocr_text).sort((a, b) => b[1] - a[1]).map(([brand, confidence], index) => (
-                        <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
+                    {(analysisData.ocr_text && analysisData.ocr_text.length) ? (<ul>
+                      {analysisData.ocr_text.sort((a, b) => b[1] - a[1]).map((item, index) => (
+                        <li key={index}>{item["brand"]} - {"confidence" in item?((item["confidence"] * 100).toFixed(1) + '%'):("")}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
