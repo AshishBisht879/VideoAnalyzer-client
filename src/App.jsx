@@ -211,7 +211,7 @@ function App() {
                   </div>
                   <div className="analysis-column">
                   <h3> Video Intelligence (Text: Detected Brands) :</h3>
-                    {(analysisData.oct_text && Object.keys(analysisData.ocr_text).length) ? (<ul>
+                    {(analysisData.ocr_text && Object.keys(analysisData.ocr_text).length) ? (<ul>
                       {Object.entries(analysisData.ocr_text).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
                       ))}
