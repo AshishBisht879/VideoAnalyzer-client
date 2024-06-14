@@ -184,7 +184,7 @@ function App() {
               <h3>Brand Composite Confidence Score :</h3>
               {(analysisData && analysisData.final_brands && Object.keys(analysisData.final_brands).length) ? (
                 <ul>
-                  {Object.entries(analysisData.final_brands).map(([brand, confi], index) => (
+                  {Object.entries(analysisData.final_brands).sort((a, b) => b[1] - a[1]).map(([brand, confi], index) => (
                     <li key={index}>
                       {brand} - {(confi * 100).toFixed(1)}%
                     </li>
@@ -203,8 +203,8 @@ function App() {
                     <h3>Video Intelligence (Logos: Detected Brands) :</h3>
                     {(analysisData.brands_video_gcp && Object.keys(analysisData.brands_video_gcp).length) ? (
                       <ul>
-                        {Object.keys(analysisData.brands_video_gcp).map((logo, index) => (
-                          <li key={index}>{logo} - {(analysisData.brands_video_gcp[logo] * 100).toFixed(1) + '%'}</li>
+                        {Object.entries(analysisData.brands_video_gcp).sort((a, b) => b[1] - a[1]).map(([brand, confi], index) => (
+                          <li key={index}>{brand} - {(confi * 100).toFixed(1) + '%'}</li>
                         ))}
                       </ul>
                     ) : (<p>No Results Found</p>)}
@@ -212,7 +212,7 @@ function App() {
                   <div className="analysis-column">
                   <h3> Video Intelligence (Text: Detected Brands) :</h3>
                     {(analysisData.ocr_text && Object.keys(analysisData.ocr_text).length) ? (<ul>
-                      {Object.entries(analysisData.ocr_text).map(([brand, confidence], index) => (
+                      {Object.entries(analysisData.ocr_text).sort((a, b) => b[1] - a[1]).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
@@ -220,7 +220,7 @@ function App() {
                   <div className="analysis-column">
                     <h3>LLMs ( Detected Brands) :</h3>
                     {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (<ul>
-                      {Object.entries(analysisData.brands_audio.gemini_results).map(([brand, confidence], index) => (
+                      {Object.entries(analysisData.brands_audio.gemini_results).sort((a, b) => b[1] - a[1]).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
@@ -228,7 +228,7 @@ function App() {
                   <div className="analysis-column">
                     <h3>Entities Detection (Detected Brands) :</h3>
                     {(analysisData.brands_audio.comprehend_results && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
-                      {Object.entries(analysisData.brands_audio.comprehend_results).map(([brand, confidence], index) => (
+                      {Object.entries(analysisData.brands_audio.comprehend_results).sort((a, b) => b[1] - a[1]).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
