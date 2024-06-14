@@ -225,14 +225,14 @@ function App() {
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
-                  <div className="analysis-column">
+                  {/* <div className="analysis-column">
                     <h3>Entities Detection (Detected Brands) :</h3>
                     {(analysisData.brands_audio.comprehend_results && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.comprehend_results).sort((a, b) => b[1] - a[1]).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
-                  </div>
+                  </div> */}
                   <div className="analysis-column">
                     <h3>Category (IAB) :</h3>
                     {(analysisData.final_categories && Object.keys(analysisData.final_categories).length) ? (<ul>
