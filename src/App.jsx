@@ -200,7 +200,7 @@ function App() {
               {analysisData ? (
                 <>
                   <div className="analysis-column">
-                    <h3>Video Intelligence (Visual Text + Detected Brands):</h3>
+                    <h3>Video Intelligence (Detected Brands/Logos):</h3>
                     {(analysisData.brands_video_gcp && Object.keys(analysisData.brands_video_gcp).length) ? (
                       <ul>
                         {Object.keys(analysisData.brands_video_gcp).map((logo, index) => (
@@ -210,7 +210,15 @@ function App() {
                     ) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>LLM (Audio Transcript Brands):</h3>
+                  <h3> Video Intelligence (Detected Text)::</h3>
+                    {(analysisData.brands_text && Object.keys(analysisData.brands_text).length) ? (<ul>
+                      {Object.entries(analysisData.brands_text).map(([brand, confidence], index) => (
+                        <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
+                      ))}
+                    </ul>) : (<p>No Results Found</p>)}
+                  </div>
+                  <div className="analysis-column">
+                    <h3>LLM (Detected Brands):</h3>
                     {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.gemini_results).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
@@ -218,7 +226,7 @@ function App() {
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>Entities Detection (Audio Transcript Brands):</h3>
+                    <h3>Entities Detection (Detected Brands):</h3>
                     {(analysisData.brands_audio.comprehend_results && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.comprehend_results).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
