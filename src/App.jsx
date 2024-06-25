@@ -218,7 +218,7 @@ function App() {
               {analysisData ? (
                 <>
                   <div className="analysis-column">
-                    <h3>Video Intelligence (Logos: Detected Brands) :</h3>
+                    <h3>Logos (Detected Brands) :</h3>
                     {(analysisData.brands_video_gcp && Object.keys(analysisData.brands_video_gcp).length) ? (
                       <ul>
                         {Object.entries(analysisData.brands_video_gcp).sort((a, b) => b[1] - a[1]).map(([brand, confi], index) => (
@@ -228,7 +228,7 @@ function App() {
                     ) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                  <h3> Video Intelligence (Text: Detected Brands) :</h3>
+                  <h3>Text (Detected Brands) :</h3>
                     {(analysisData.ocr_text && analysisData.ocr_text.length) ? (<ul>
                       {analysisData.ocr_text.sort((a, b) => b[1] - a[1]).map((item, index) => (
                         <li key={index}>{item["brand"]} - {"confidence" in item?((item["confidence"] * 100).toFixed(1) + '%'):("")}</li>
