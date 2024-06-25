@@ -180,19 +180,37 @@ function App() {
               <source src={videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
-            <div className="analysis-column">
-              <h3>Brand Composite Confidence Score :</h3>
-              {(analysisData && analysisData.final_brands && Object.keys(analysisData.final_brands).length) ? (
-                <ul>
-                  {Object.entries(analysisData.final_brands).sort((a, b) => b[1] - a[1]).map(([brand, confi], index) => (
-                    <li key={index}>
-                      {brand} - {(confi * 100).toFixed(1)}%
-                    </li>
-                  ))}
-                </ul>
-              ) : (<p>No Results Found</p>)
-              }
-            </div>
+              <div>
+
+                <div>
+                  <h3>Brand Composite Confidence Score :</h3>
+                  {(analysisData && analysisData.final_brands && Object.keys(analysisData.final_brands).length) ? (
+                    <ul>
+                      {Object.entries(analysisData.final_brands).sort((a, b) => b[1] - a[1]).map(([brand, confi], index) => (
+                        <li key={index}>
+                          {brand} - {(confi * 100).toFixed(1)}%
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (<p>No Results Found</p>)
+                  }
+                </div>
+
+
+
+                <div className="video_specs">
+                <h3>Video Specs : </h3>
+                {(analysisData && analysisData?.video_info && (!(analysisData?.video_info.hasOwnProperty('error')))) ? (
+                  <ul>
+                    <li>Resolution : {analysisData?.video_info["width"]} x {analysisData?.video_info["height"]}</li>
+                    <li>FPS : {analysisData?.video_info["fps"]}</li>
+                    <li>Duration : {analysisData?.video_info["duration"]}</li>
+                  </ul>
+                ) : (<p>No Results Found</p>)
+                }
+              </div>
+                
+              </div>
           </div>
           <div className="analysis-container">
             <>

@@ -117,6 +117,21 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   margin-bottom: 20px; /* Add some spacing */
   }
+
+  .video_specs{
+    width: 100%;
+    margin-top: 45px  ;
+  }
+
+  .video_specs>ul {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(150px,1fr));
+  gap: 10px;
+  }
+
+  .video_specs li {
+    margin-right: 10px;
+    }
   
   .loading-spinner {
     width: 100px;
