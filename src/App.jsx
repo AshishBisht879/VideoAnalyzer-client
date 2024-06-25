@@ -202,7 +202,7 @@ function App() {
                 <h3>Video Specs : </h3>
                 {(analysisData && analysisData?.video_info && (!(analysisData?.video_info.hasOwnProperty('error')))) ? (
                   <ul>
-                    <li>Resolution : {analysisData?.video_info["width"]} x {analysisData?.video_info["height"]}</li>
+                    <li>Res : {analysisData?.video_info["width"]} x {analysisData?.video_info["height"]} </li>
                     <li>FPS : {analysisData?.video_info["fps"]}</li>
                     <li>Duration : {analysisData?.video_info["duration"]}</li>
                   </ul>
@@ -214,7 +214,9 @@ function App() {
           </div>
           <div className="analysis-container">
             <>
-              <h1>Analysis Result:</h1>
+              <h1>Analysis Result : 
+                {analysisData && analysisData.hasOwnProperty('start_time') && analysisData.hasOwnProperty('end_time')?(<> (<span className='time_taken'> {((analysisData['end_time']-analysisData['start_time']).toFixed(2))} Sec</span>)</>):(<></>)}
+              </h1>
               {analysisData ? (
                 <>
                   <div className="analysis-column">

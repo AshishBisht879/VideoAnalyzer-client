@@ -129,6 +129,11 @@ body {
   gap: 10px;
   }
 
+  .time_taken{
+    font-weight: 300;
+    color:#007bff;
+  }
+
   .video_specs li {
     margin-right: 10px;
     }
