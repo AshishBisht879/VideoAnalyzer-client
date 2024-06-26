@@ -243,7 +243,7 @@ function App() {
     <ul>
       {Object.entries(analysisData.brands_audio.gemini_results)
         .sort((a, b) => b[1] - a[1])  // Sort by confidence (descending)
-        .filter(([brand, confidence]) => confidence > 0.85)  // Filter for confidence above 85%
+        .filter(([brand, confidence]) => confidence > 0.70)  // Filter for confidence above 85%
         .map(([brand, confidence], index) => (
           <li key={index}>
             {brand} - {(confidence * 100).toFixed(1) + '%'}
