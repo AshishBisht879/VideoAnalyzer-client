@@ -238,15 +238,27 @@ function App() {
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                    <h3>LLMs ( Detected Brands) :</h3>
-                    {(analysisData.brands_audio.gemini_results && !Object.entries(analysisData.brands_audio.gemini_results).filter(
-                      ([brand, confidence]) => confidence > 0.85
-                    ).length) ? (<ul>
-                      {Object.entries(analysisData.brands_audio.gemini_results).sort((a, b) => b[1] - a[1]).map(([brand, confidence], index) => (
-                        <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
-                      ))}
-                    </ul>) : (<p>No Results Found</p>)}
-                  </div>
+  <h3>LLMs ( Detected Brands) :</h3>
+  {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (
+    <ul>
+      {Object.entries(analysisData.brands_audio.gemini_results)
+        .sort((a, b) => b[1] - a[1])  // Sort by confidence (descending)
+        .filter(([brand, confidence]) => confidence > 0.85)  // Filter for confidence above 85%
+        .map(([brand, confidence], index) => (
+          <li key={index}>
+            {brand} - {(confidence * 100).toFixed(1) + '%'}
+          </li>
+        ))}
+      { // Check for no records after filtering
+        !Object.entries(analysisData.brands_audio.gemini_results).filter(
+          ([brand, confidence]) => confidence > 0.85
+        ).length && (
+          <p>No Results Found</p>
+        )
+      }
+    </ul>
+  ) : (<p>No Results Found</p>)}
+</div>
                   {/* <div className="analysis-column">
                     <h3>Entities Detection (Detected Brands) :</h3>
                     {(analysisData.brands_audio.comprehend_results && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
