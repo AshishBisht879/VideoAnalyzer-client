@@ -132,6 +132,7 @@ body {
   .time_taken{
     font-weight: 300;
     color:#007bff;
+    display: none;
   }
 
   .video_specs li {

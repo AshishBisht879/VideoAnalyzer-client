@@ -170,7 +170,7 @@ function App() {
       </div>
       {statusMessage.message && <div className={statusMessage?.status === 1 ? `status_field_green status_field` : `status_field_orange status_field`}>{statusMessage?.message}
         {statusMessage.status === 1 && <span className='link' onClick={() => { handleVideoSelect({ video_path: statusMessage.video_path, status: statusMessage.status }) }}>View Results</span>}
-        {statusMessage.status === 0 && <span className="loading-spinner"><img style={{width:'100%'}}src="https://flinenergy.com/flin_css_js_font_images/images/loader.gif" alt="Loading..." /></span>}
+        {statusMessage.status === 0 && <span className="loading-spinner"><img style={{ width: '100%' }} src="https://flinenergy.com/flin_css_js_font_images/images/loader.gif" alt="Loading..." /></span>}
         <span className="close-button" onClick={() => setStatusMessage({})}>×</span>
       </div>}
       {(analysisData) && (
@@ -180,25 +180,25 @@ function App() {
               <source src={videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
+            <div>
+
               <div>
-
-                <div>
-                  <h3>Brand Composite Confidence Score :</h3>
-                  {(analysisData && analysisData.final_brands && Object.keys(analysisData.final_brands).length) ? (
-                    <ul>
-                      {Object.entries(analysisData.final_brands).sort((a, b) => b[1] - a[1]).map(([brand, confi], index) => (
-                        <li key={index}>
-                          {brand} - {(confi * 100).toFixed(1)}%
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (<p>No Results Found</p>)
-                  }
-                </div>
+                <h3>Brand Composite Confidence Score :</h3>
+                {(analysisData && analysisData.final_brands && Object.keys(analysisData.final_brands).length) ? (
+                  <ul>
+                    {Object.entries(analysisData.final_brands).sort((a, b) => b[1] - a[1]).map(([brand, confi], index) => (
+                      <li key={index}>
+                        {brand} - {(confi * 100).toFixed(1)}%
+                      </li>
+                    ))}
+                  </ul>
+                ) : (<p>No Results Found</p>)
+                }
+              </div>
 
 
 
-                <div className="video_specs">
+              <div className="video_specs">
                 <h3>Video Specs : </h3>
                 {(analysisData && analysisData?.video_info && (!(analysisData?.video_info.hasOwnProperty('error')))) ? (
                   <ul>
@@ -209,13 +209,13 @@ function App() {
                 ) : (<p>No Results Found</p>)
                 }
               </div>
-                
-              </div>
+
+            </div>
           </div>
           <div className="analysis-container">
             <>
-              <h1>Analysis Result : 
-                {analysisData && analysisData.hasOwnProperty('start_time') && analysisData.hasOwnProperty('end_time')?(<> (<span className='time_taken'> {((analysisData['end_time']-analysisData['start_time']).toFixed(2))} Sec</span>)</>):(<></>)}
+              <h1>Analysis Result :
+                {analysisData && analysisData.hasOwnProperty('start_time') && analysisData.hasOwnProperty('end_time') ? (<> (<span className='time_taken'> {((analysisData['end_time'] - analysisData['start_time']).toFixed(2))} Sec</span>)</>) : (<></>)}
               </h1>
               {analysisData ? (
                 <>
@@ -230,16 +230,18 @@ function App() {
                     ) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-                  <h3>Text (Detected Brands) :</h3>
+                    <h3>Text (Detected Brands) :</h3>
                     {(analysisData.ocr_text && analysisData.ocr_text.length) ? (<ul>
                       {analysisData.ocr_text.sort((a, b) => b[1] - a[1]).map((item, index) => (
-                        <li key={index}>{item["brand"]} - {"confidence" in item?((item["confidence"] * 100).toFixed(1) + '%'):("")}</li>
+                        <li key={index}>{item["brand"]} - {"confidence" in item ? ((item["confidence"] * 100).toFixed(1) + '%') : ("")}</li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
                     <h3>LLMs ( Detected Brands) :</h3>
-                    {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (<ul>
+                    {(analysisData.brands_audio.gemini_results && !Object.entries(analysisData.brands_audio.gemini_results).filter(
+                      ([brand, confidence]) => confidence > 0.85
+                    ).length) ? (<ul>
                       {Object.entries(analysisData.brands_audio.gemini_results).sort((a, b) => b[1] - a[1]).map(([brand, confidence], index) => (
                         <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
                       ))}
