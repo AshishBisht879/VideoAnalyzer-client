@@ -215,7 +215,7 @@ function App() {
           <div className="analysis-container">
             <>
               <h1>Analysis Result :
-                {analysisData && analysisData.hasOwnProperty('start_time') && analysisData.hasOwnProperty('end_time') ? (<> (<span className='time_taken'> {((analysisData['end_time'] - analysisData['start_time']).toFixed(2))} Sec</span>)</>) : (<></>)}
+                {analysisData && analysisData.hasOwnProperty('start_time') && analysisData.hasOwnProperty('end_time') ? (<> <span className='time_taken'> {((analysisData['end_time'] - analysisData['start_time']).toFixed(2))} Sec</span></>) : (<></>)}
               </h1>
               {analysisData ? (
                 <>
