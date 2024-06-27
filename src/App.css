@@ -134,7 +134,7 @@ body {
     color:#007bff;
   }
 
-  .confidence .time_taken{
+  .confidence,.time_taken{
     display: none;
   }
 
