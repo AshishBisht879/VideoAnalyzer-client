@@ -132,6 +132,9 @@ body {
   .time_taken{
     font-weight: 300;
     color:#007bff;
+  }
+
+  .confidence .time_taken{
     display: none;
   }
 

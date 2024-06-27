@@ -224,7 +224,7 @@ function App() {
                     {(analysisData.brands_video_gcp && Object.keys(analysisData.brands_video_gcp).length) ? (
                       <ul>
                         {Object.entries(analysisData.brands_video_gcp).sort((a, b) => b[1] - a[1]).map(([brand, confi], index) => (
-                          <li key={index}>{brand} - {(confi * 100).toFixed(1) + '%'}</li>
+                          <li key={index}>{brand}<span className='confidence'> - {(confi * 100).toFixed(1) + '%'}</span></li>
                         ))}
                       </ul>
                     ) : (<p>No Results Found</p>)}
@@ -233,7 +233,7 @@ function App() {
                     <h3>Text (Detected Brands) :</h3>
                     {(analysisData.ocr_text && analysisData.ocr_text.length) ? (<ul>
                       {analysisData.ocr_text.sort((a, b) => b[1] - a[1]).map((item, index) => (
-                        <li key={index}>{item["brand"]} - {"confidence" in item ? ((item["confidence"] * 100).toFixed(1) + '%') : ("")}</li>
+                        <li key={index}>{item["brand"]}<span className='confidence'> - {"confidence" in item ? ((item["confidence"] * 100).toFixed(1) + '%') : ("")}</span></li>
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
@@ -246,7 +246,7 @@ function App() {
         .filter(([brand, confidence]) => confidence > 0.70)  // Filter for confidence above 85%
         .map(([brand, confidence], index) => (
           <li key={index}>
-            {brand} - {(confidence * 100).toFixed(1) + '%'}
+            {brand}<span className='confidence'> - {(confidence * 100).toFixed(1) + '%'}</span>
           </li>
         ))}
       { // Check for no records after filtering
