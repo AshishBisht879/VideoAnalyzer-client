@@ -33,7 +33,7 @@ body {
     max-width: 90vw;
   
     left: 50%;
-    top: 10px;
+    top: 10%;
     transform: translate(-50%);
     height: 80vh;
     backdrop-filter: blur(50px);
