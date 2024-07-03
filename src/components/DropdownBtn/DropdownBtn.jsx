@@ -4,9 +4,9 @@ import './DropdownBtn.css';
 
 const DropdownBtn = ({ children, open, toggle }) => {
   return (
-    <div onClick={toggle} className={`dropdown-btn ${open ? 'button-open' : ''}`}>
+    <div onClick={(e) => { e.stopPropagation(); toggle(); }}className={`dropdown-btn ${open ? 'button-open' : ''}`}>
       {children}
-      <span className='toggle-icon' onClick={(e) => { e.stopPropagation(); toggle(); }}>
+      <span className='toggle-icon' >
         {open ? <FaChevronUp /> : <FaChevronDown />}
       </span>
     </div>

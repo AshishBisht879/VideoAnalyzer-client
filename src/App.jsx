@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef ,useContext} from 'react';
 import axios from 'axios';
 import './App.css';
 import Dropdown from './components/Dropdown/Dropdown.jsx';
@@ -16,12 +16,33 @@ function App() {
   const [pastAnalyzedVideos, setPastAnalyzedVideos] = useState([]);
   const [DropdownText, setDropDownText] = useState('Choose Video');
   const [statusMessage, setStatusMessage] = useState({});
+  
   let oldStateResponse = []  //it will hold the previous response data from /records for comparing the state
   useEffect(() => {
     fetchPastAnalyzedVideos();
     const intervalID = setInterval(fetchPastAnalyzedVideos, 4000); // called every 4 seconds
     return () => clearInterval(intervalID);
   }, []);
+
+  const [open,setOpen] = useState(false) //State varible to toggle the the asset list
+
+    const dropdownRef = useRef()
+
+    useEffect(()=>{
+      const handler =(event)=>{
+        if(dropdownRef.current && !dropdownRef.current.contains(event.target))
+        setOpen(false)
+      }
+      document.addEventListener("click",handler)
+
+      return ()=>{
+        document.removeEventListener("click",handler)
+      }
+    },[dropdownRef])
+
+    const toggelDropdonw = () =>{
+        setOpen((open)=>!open);
+    }
 
 
   function getStatus(status_code) {
@@ -125,6 +146,9 @@ function App() {
           console.log("Not Success Response while generating signed URL", response.status);
           setVideoUrl(null);
         }
+
+        setOpen(false)
+
       } catch (error) {
         console.log("Error Retrieving Video Signed URL", error.message);
         setVideoUrl(null);
@@ -139,6 +163,28 @@ function App() {
       <header className="header">
         <h1 className="tagline">Ads Classification Tool</h1>
       </header>
+      <div ref={dropdownRef} className={`wholeList ${open ? "wholeList-open" : ''}`}>
+          <>
+            {pastAnalyzedVideos.map((video, index) => (
+              (video.video_path &&
+                <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
+                  {`${video.video_path.split('/')[1]}`}
+                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (getStatus(video.status)) : "Unknown"}`}</span>
+                </DropdownItem>
+              )
+            ))}
+            
+
+{pastAnalyzedVideos.map((video, index) => (
+              (video.video_path &&
+                <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
+                  {`${video.video_path.split('/')[1]}`}
+                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (getStatus(video.status)) : "Unknown"}`}</span>
+                </DropdownItem>
+              )
+            ))}
+            </>
+      </div>
       <div className="control-panel">
         <div className="upload-btn">
           <label htmlFor="videoUpload">Upload Video</label>
@@ -155,18 +201,7 @@ function App() {
             </div>
           </div>
         )}
-        <Dropdown buttonText={DropdownText} content={
-          <>
-            {pastAnalyzedVideos.map((video, index) => (
-              (video.video_path &&
-                <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
-                  {`${video.video_path.split('/')[1]}`}
-                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (getStatus(video.status)) : "Unknown"}`}</span>
-                </DropdownItem>
-              )
-            ))}
-          </>
-        } />
+        <Dropdown  open={open} toggle={toggelDropdonw} buttonText={DropdownText}/>
       </div>
       {statusMessage.message && <div className={statusMessage?.status === 1 ? `status_field_green status_field` : `status_field_orange status_field`}>{statusMessage?.message}
         {statusMessage.status === 1 && <span className='link' onClick={() => { handleVideoSelect({ video_path: statusMessage.video_path, status: statusMessage.status }) }}>View Results</span>}

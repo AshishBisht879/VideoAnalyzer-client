@@ -25,7 +25,34 @@ body {
     padding: 20px;
     color: white;
   }
+
+  .wholeList {
+    display: none;
+    z-index: 200;
+    position: fixed;
+    max-width: 90vw;
   
+    left: 50%;
+    top: 10px;
+    transform: translate(-50%);
+    height: 80vh;
+    backdrop-filter: blur(50px);
+  
+    padding: 10px;
+    border-radius: 0.5rem;
+    box-shadow: rgba(42, 45, 48, 0.2) 0px 8px 24px;
+  
+    /* Grid properties for wrapping */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Adjust min-width as needed */
+    grid-auto-rows: minmax(auto, 50px);
+    grid-gap: 1em 1.5em;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+
+  .wholeList-open{
+    display: grid;
+  }
   .tagline {
     font-size: 2em;
     margin: 0;
@@ -84,18 +111,22 @@ body {
     border-color: #61dafb;
   }
   
-.content {
-  display: flex;
-  flex-wrap: wrap;  /* Key for vertical alignment on small screens */
-  justify-content: space-around;
-  align-items: flex-start;
-  margin: 20px;
-  transition: transform 550ms ease-in-out, opacity 500ms ease-in-out;
-}
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+  }
+  
+  /* Media query for mobile devices (adjust breakpoint as needed) */
+  @media (max-width: 768px) {
+    .content {
+      grid-template-columns: 1fr; /* Single column for mobile */
+    }
+  }
+  
 
   
   .video-container {
-    width: 45%; /* Adjust video container width */
+    margin: 20px; /* Adjust video container width */
     border: 1px solid #ddd; /* Add thin border */
     border-radius: 5px; /* Rounded corners */
     padding: 10px; /* Add some padding */
@@ -109,7 +140,7 @@ body {
   }
   
   .analysis-container {
-    width: 45%;
+    margin: 20px;
     text-align: left;
     border: 1px solid #ddd; /* Add thin border */
   border-radius: 5px; /* Rounded corners */
@@ -235,7 +266,6 @@ body {
     padding: 5px 8px;
     background-color: #dddddd;
     color: white;
-    margin-left: 8px;
     width: 80px
   }
 
