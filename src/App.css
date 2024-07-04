@@ -36,7 +36,7 @@ body {
     top: 10%;
     transform: translate(-50%);
     height: 80vh;
-    backdrop-filter: blur(50px);
+    backdrop-filter: blur(4000px);
   
     padding: 10px;
     border-radius: 0.5rem;
