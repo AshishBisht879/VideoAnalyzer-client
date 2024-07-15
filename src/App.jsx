@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef ,useContext} from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 import './App.css';
 import Dropdown from './components/Dropdown/Dropdown.jsx';
@@ -16,7 +16,7 @@ function App() {
   const [pastAnalyzedVideos, setPastAnalyzedVideos] = useState([]);
   const [DropdownText, setDropDownText] = useState('Choose Video');
   const [statusMessage, setStatusMessage] = useState({});
-  
+
   let oldStateResponse = []  //it will hold the previous response data from /records for comparing the state
   useEffect(() => {
     fetchPastAnalyzedVideos();
@@ -24,25 +24,25 @@ function App() {
     return () => clearInterval(intervalID);
   }, []);
 
-  const [open,setOpen] = useState(false) //State varible to toggle the the asset list
+  const [open, setOpen] = useState(false) //State varible to toggle the the asset list
 
-    const dropdownRef = useRef()
+  const dropdownRef = useRef()
 
-    useEffect(()=>{
-      const handler =(event)=>{
-        if(dropdownRef.current && !dropdownRef.current.contains(event.target))
+  useEffect(() => {
+    const handler = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target))
         setOpen(false)
-      }
-      document.addEventListener("click",handler)
-
-      return ()=>{
-        document.removeEventListener("click",handler)
-      }
-    },[dropdownRef])
-
-    const toggelDropdonw = () =>{
-        setOpen((open)=>!open);
     }
+    document.addEventListener("click", handler)
+
+    return () => {
+      document.removeEventListener("click", handler)
+    }
+  }, [dropdownRef])
+
+  const toggelDropdonw = () => {
+    setOpen((open) => !open);
+  }
 
 
   function getStatus(status_code) {
@@ -67,7 +67,6 @@ function App() {
       changedVideoState?.forEach(video => {
         showStatusMessage({ video_path: video.video_path, message: `Video ${video.video_path.split('/')[1]} status changed to ${getStatus(video.new)}`, status: video.new });
       });
-
       setPastAnalyzedVideos(newVideos);
 
     } catch (error) {
@@ -164,26 +163,16 @@ function App() {
         <h1 className="tagline">Ads Classification Tool</h1>
       </header>
       <div ref={dropdownRef} className={`wholeList ${open ? "wholeList-open" : ''}`}>
-          <>
-            {pastAnalyzedVideos.map((video, index) => (
-              (video.video_path &&
-                <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
-                  {`${video.video_path.split('/')[1]}`}
-                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (getStatus(video.status)) : "Unknown"}`}</span>
-                </DropdownItem>
-              )
-            ))}
-            
-
-{pastAnalyzedVideos.map((video, index) => (
-              (video.video_path &&
-                <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
-                  {`${video.video_path.split('/')[1]}`}
-                  <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (getStatus(video.status)) : "Unknown"}`}</span>
-                </DropdownItem>
-              )
-            ))}
-            </>
+        <>
+          {pastAnalyzedVideos.map((video, index) => (
+            (video.video_path &&
+              <DropdownItem key={index} onClick={() => handleVideoSelect(video)}>
+                {`${video.video_path.split('/')[1]}`}
+                <span className={`${video.status === 1 ? 'status status-green' : video.status === 0 ? 'status status-orange' : 'status'}`}>{`${Object.hasOwn(video, 'status') ? (getStatus(video.status)) : "Unknown"}`}</span>
+              </DropdownItem>
+            )
+          ))}
+        </>
       </div>
       <div className="control-panel">
         <div className="upload-btn">
@@ -201,7 +190,7 @@ function App() {
             </div>
           </div>
         )}
-        <Dropdown  open={open} toggle={toggelDropdonw} buttonText={DropdownText}/>
+        <Dropdown open={open} toggle={toggelDropdonw} buttonText={DropdownText} />
       </div>
       {statusMessage.message && <div className={statusMessage?.status === 1 ? `status_field_green status_field` : `status_field_orange status_field`}>{statusMessage?.message}
         {statusMessage.status === 1 && <span className='link' onClick={() => { handleVideoSelect({ video_path: statusMessage.video_path, status: statusMessage.status }) }}>View Results</span>}
@@ -252,6 +241,7 @@ function App() {
               <h1>Analysis Result :
                 {analysisData && analysisData.hasOwnProperty('start_time') && analysisData.hasOwnProperty('end_time') ? (<> <span className='time_taken'> {((analysisData['end_time'] - analysisData['start_time']).toFixed(2))} Sec</span></>) : (<></>)}
               </h1>
+
               {analysisData ? (
                 <>
                   <div className="analysis-column">
@@ -273,35 +263,27 @@ function App() {
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
                   <div className="analysis-column">
-  <h3>LLMs ( Detected Brands) :</h3>
-  {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (
-    <ul>
-      {Object.entries(analysisData.brands_audio.gemini_results)
-        .sort((a, b) => b[1] - a[1])  // Sort by confidence (descending)
-        .filter(([brand, confidence]) => confidence > 0.70)  // Filter for confidence above 85%
-        .map(([brand, confidence], index) => (
-          <li key={index}>
-            {brand}<span className='confidence'> - {(confidence * 100).toFixed(1) + '%'}</span>
-          </li>
-        ))}
-      { // Check for no records after filtering
-        !Object.entries(analysisData.brands_audio.gemini_results).filter(
-          ([brand, confidence]) => confidence > 0.85
-        ).length && (
-          <p>No Results Found</p>
-        )
-      }
-    </ul>
-  ) : (<p>No Results Found</p>)}
-</div>
-                  {/* <div className="analysis-column">
-                    <h3>Entities Detection (Detected Brands) :</h3>
-                    {(analysisData.brands_audio.comprehend_results && Object.keys(analysisData.brands_audio.comprehend_results).length) ? (<ul>
-                      {Object.entries(analysisData.brands_audio.comprehend_results).sort((a, b) => b[1] - a[1]).map(([brand, confidence], index) => (
-                        <li key={index}>{brand} - {(confidence * 100).toFixed(1) + '%'}</li>
-                      ))}
-                    </ul>) : (<p>No Results Found</p>)}
-                  </div> */}
+                    <h3>LLMs ( Detected Brands) :</h3>
+                    {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (
+                      <ul>
+                        {Object.entries(analysisData.brands_audio.gemini_results)
+                          .sort((a, b) => b[1] - a[1])  // Sort by confidence (descending)
+                          .filter(([brand, confidence]) => confidence > 0.70)  // Filter for confidence above 85%
+                          .map(([brand, confidence], index) => (
+                            <li key={index}>
+                              {brand}<span className='confidence'> - {(confidence * 100).toFixed(1) + '%'}</span>
+                            </li>
+                          ))}
+                        { // Check for no records after filtering
+                          !Object.entries(analysisData.brands_audio.gemini_results).filter(
+                            ([brand, confidence]) => confidence > 0.85
+                          ).length && (
+                            <p>No Results Found</p>
+                          )
+                        }
+                      </ul>
+                    ) : (<p>No Results Found</p>)}
+                  </div>
                   <div className="analysis-column">
                     <h3>Category (IAB) :</h3>
                     {(analysisData.final_categories && Object.keys(analysisData.final_categories).length) ? (<ul>
