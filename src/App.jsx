@@ -262,6 +262,17 @@ function App() {
                       ))}
                     </ul>) : (<p>No Results Found</p>)}
                   </div>
+
+                  <div className="analysis-column">
+                    <h3>Key Frames Result (Detected Brands) :</h3>
+                    {(analysisData.key_frames_text && analysisData.key_frames_text.length) ? (<ul>
+                      {analysisData.key_frames_text.sort((a, b) => b[1] - a[1]).map((item, index) => (
+                        <li key={index}>{item["brand"]}<span className='confidence'> - {"confidence" in item ? ((item["confidence"] * 100).toFixed(1) + '%') : ("")}</span></li>
+                      ))}
+                    </ul>) : (<p>No Results Found</p>)}
+                  </div>
+
+
                   <div className="analysis-column">
                     <h3>LLMs ( Detected Brands) :</h3>
                     {(analysisData.brands_audio.gemini_results && Object.keys(analysisData.brands_audio.gemini_results).length) ? (
