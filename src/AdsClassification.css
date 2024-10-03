@@ -1,5 +1,3 @@
-/* App.css */
-
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
@@ -24,6 +22,39 @@ body {
     background-color: #282c34;
     padding: 20px;
     color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center; 
+  }
+   
+  .tagline {
+    font-size: 2em;
+    margin: 0;
+    text-align: center;
+    flex: 1;
+  }
+   
+  .ads-search-tool {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    background-color: #4caf50; 
+    padding: 10px; 
+    border-radius: 5px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    transition: background-color 0.3s, box-shadow 0.3s; 
+  }
+   
+  .ads-search-tool:hover {
+    background-color: #45a049;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); 
+  }
+   
+  .hyperlink-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px; 
   }
 
   .wholeList {
@@ -53,10 +84,7 @@ body {
   .wholeList-open{
     display: grid;
   }
-  .tagline {
-    font-size: 2em;
-    margin: 0;
-  }
+  
   
   .control-panel {
     display: flex;
@@ -113,25 +141,25 @@ body {
   
   .content {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-template-columns: 1fr 1fr;
   }
   
   /* Media query for mobile devices (adjust breakpoint as needed) */
   @media (max-width: 768px) {
     .content {
-      grid-template-columns: 1fr; /* Single column for mobile */
+      grid-template-columns: 1fr; 
     }
   }
   
 
   
   .video-container {
-    margin: 20px; /* Adjust video container width */
-    border: 1px solid #ddd; /* Add thin border */
-    border-radius: 5px; /* Rounded corners */
-    padding: 10px; /* Add some padding */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    margin-bottom: 20px; /* Add some spacing */
+    margin: 20px; 
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+    margin-bottom: 20px;
   }
   
   .video-player {
@@ -180,17 +208,17 @@ body {
 
 
   .link {
-    cursor: pointer;  /* Pointer cursor on hover */
-    color: #007bff;  /* Default color (adjust as needed) */
-    text-decoration: none;  /* Remove underline for link appearance */
-    padding: 5px 10px;  /* Optional padding for visual appeal */
-    border: 1px solid #ddd;  /* Optional border for visual appeal */
-    border-radius: 4px;  /* Optional rounded corners */
-    transition: color 0.2s ease-in-out;  /* Smooth color transition on hover */
+    cursor: pointer;  
+    color: #007bff;  
+    text-decoration: none;  
+    padding: 5px 10px;  
+    border: 1px solid #ddd; 
+    border-radius: 4px; 
+    transition: color 0.2s ease-in-out;  
   }
   
   .link:hover {
-    color: #0056b3;  /* Hover color (adjust as desired) */
+    color: #0056b3;  
   }
   .status_field_green{
     background-color: #BBF37B;
@@ -204,7 +232,7 @@ body {
     font-weight: 600;
     height: 3rem;
     margin: 15px;
-    padding: 1rem; /* Add padding for spacing between text and close button */
+    padding: 1rem; 
     display: flex;
   align-items: center;
   justify-content: space-between;
@@ -220,29 +248,14 @@ body {
     align-items: center;
     line-height: 1.8rem;
     border-radius: 100%;
-    font-size: 2rem; /* Adjust font size for cross symbol based on preference */
+    font-size: 2rem; 
     font-weight: bold;
-    position: relative; /* Enable relative positioning for corner placement */
+    position: relative; 
     top: 0 rem; 
-    right: 0.5rem; /* Position at right with slight offset */
+    right: 0.5rem; 
   }
 
-  /* .status_field {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(255, 255, 255, 0.9);
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px 20px;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out; 
-  } */
-  
-  /* .status_field.active {
-    opacity: 1;
-  } */
+ 
   ul{
     list-style: none;
     padding-left: 0;
