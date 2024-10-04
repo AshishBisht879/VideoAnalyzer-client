@@ -95,7 +95,7 @@ function SearchAds() {
         <h1 className="tagline">Ads Search Tool</h1>
         <Link className="ads-search-tool" to="/" target="_blank" rel="noopener noreferrer">
           <img src="/hyperlink-icon.png" alt="Hyperlink" className="hyperlink-icon" />
-          Ads Classify Tool
+          Ads Classify
         </Link>
       </header>
 

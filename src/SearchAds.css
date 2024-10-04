@@ -73,6 +73,7 @@ body {
     }
     
     .search-button {
+      width: auto;
       padding: 10px 20px; 
       border: 1px solid #ccc;
       border-radius: 3px;
