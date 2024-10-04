@@ -293,3 +293,102 @@ body {
   h1 {
     margin: auto;
   }
+
+  .view-json-button{
+    cursor: pointer;
+    float: right;
+    width: auto;
+    margin: auto;
+  }
+ 
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 100%;
+  position: relative;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-in-out;
+}
+
+
+h2 {
+  text-align: center;
+  margin:10px auto;
+  color: #333;
+  font-size: 24px;
+}
+
+
+.json-container {
+  background-color: #1e1e1e; /* Dark background */
+  color: #d4d4d4; /* Light text color */
+  border-radius: 8px;
+  padding: 20px;
+  max-height: 480px;
+  overflow-y: auto;
+  font-family: monospace;
+  text-align: left; /* Ensure text is left-aligned */
+  white-space: pre-wrap; /* Preserve formatting with line breaks and spaces */
+}
+
+.copy-button {
+  position: sticky;
+  top: 1px; 
+  width: auto;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  float: right;
+  z-index: 10; /* Ensure it's above the JSON content */
+}
+
+.copy-button:hover {
+  background-color: #0056b3;
+}
+
+
+button {
+  background-color: #d9534f;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 14px;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #c9302c;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

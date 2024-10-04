@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import JsonFormatter from 'react-json-formatter'
 import axios from 'axios';
 import './AdsClassification.css';
 import Dropdown from './components/Dropdown/Dropdown.jsx';
 import DropdownItem from './components/DropdownItem/DropdownItem.jsx';
 
-import {Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 const ServerURL = process.env.REACT_APP_SERVER_URL;
@@ -19,6 +20,9 @@ function App() {
   const [pastAnalyzedVideos, setPastAnalyzedVideos] = useState([]);
   const [DropdownText, setDropDownText] = useState('Choose Video');
   const [statusMessage, setStatusMessage] = useState({});
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [jsonData, setJsonData] = useState(null);
 
   let oldStateResponse = []  //it will hold the previous response data from /records for comparing the state
   useEffect(() => {
@@ -61,14 +65,14 @@ function App() {
       oldStateResponse?.forEach(oldRecord => {
         const newRecord = newVideos?.find(record => record._id === oldRecord._id);
         if (newRecord && oldRecord.status !== newRecord.status) {
-          changedVideoState.push({_id:newRecord._id,video_path: newRecord.video_path, old: oldRecord.status, new: newRecord.status });
+          changedVideoState.push({ _id: newRecord._id, video_path: newRecord.video_path, old: oldRecord.status, new: newRecord.status });
         }
       });
 
       oldStateResponse = JSON.parse(JSON.stringify(newVideos)) //deep copy new response to compare for next future response for state change notification
       // Pop Status Notification Bar
       changedVideoState?.forEach(video => {
-        showStatusMessage({_id:video._id,video_path: video.video_path, message: `Video ${video.video_path.split('/')[1]} status changed to ${getStatus(video.new)}`, status: video.new });
+        showStatusMessage({ _id: video._id, video_path: video.video_path, message: `Video ${video.video_path.split('/')[1]} status changed to ${getStatus(video.new)}`, status: video.new });
       });
       setPastAnalyzedVideos(newVideos);
 
@@ -98,27 +102,27 @@ function App() {
         try {
 
           // Send a GET request to the server with just the filename
-          const response= await axios.get(`${ServerURL}/getUploadSignedUrl?filename=${file.name}`);
+          const response = await axios.get(`${ServerURL}/getUploadSignedUrl?filename=${file.name}`);
           if (response.status === 200) {
             const signedUrl = response.data.signedUrl;
-      
+
             // Upload the video directly to Cloud Storage using the signed URL
             // const uploadResponse = await fetch(signedUrl, {
             //   method: 'PUT',
             //   body: formData, // Use the original formData for video upload
             // });
-              console.log("Generated Signed URL : ",signedUrl)
-              const uploadResponse = await axios.put(signedUrl, file, {
-                headers: {
-                  'Content-Type': file.type
-                },
-                onUploadProgress: (progressEvent) => {
-                  const percent = Math.round(progressEvent.loaded * 100) / progressEvent.total;
-                  setProgess(percent);
-                }
-              });
-      
-            if (uploadResponse.status === 200) {  
+            console.log("Generated Signed URL : ", signedUrl)
+            const uploadResponse = await axios.put(signedUrl, file, {
+              headers: {
+                'Content-Type': file.type
+              },
+              onUploadProgress: (progressEvent) => {
+                const percent = Math.round(progressEvent.loaded * 100) / progressEvent.total;
+                setProgess(percent);
+              }
+            });
+
+            if (uploadResponse.status === 200) {
               console.log('Video uploaded successfully!');
               setUploadStatus("Done");
               showStatusMessage({ message: `Video ${file.name} Uploaded and Analyzing ... `, status: 0 });
@@ -167,13 +171,13 @@ function App() {
       }
       const selectedName = video_data.video_path;
       const asset_id = video_data._id
-      const selectedVideoData = pastAnalyzedVideos.find(video => video._id===asset_id && video.video_path === selectedName);
+      const selectedVideoData = pastAnalyzedVideos.find(video => video._id === asset_id && video.video_path === selectedName);
       const video_name = selectedName.split('/')[1];
       setDropDownText(video_name);
       setAnalysisData(selectedVideoData);
       console.log("selectedVideoData:", selectedVideoData);
       try {
-        console.log("Get Signed URL for",video_name)
+        console.log("Get Signed URL for", video_name)
         const response = await axios.get(`${ServerURL}/getSignedUrl/${video_name}`);
         console.log("Video Select Signed Response = ", response);
         if (response.status === 200) {
@@ -195,14 +199,52 @@ function App() {
     }
   };
 
+  const handleViewJson = async () => {
+    try {
+      let filename = analysisData?.filename
+      if (filename === undefined || filename == null) {
+        throw new Error("Filename is Null or Undefined")
+      }
+      setIsModalOpen(true);
+      setJsonData({ Loading: "..." });
+      const response = await axios.get(`${ServerURL}/getViJsonFile?filename=${filename}`);
+      const data = response.data;
+      setJsonData(data);
+
+    } catch (error) {
+      console.error('Error fetching JSON data:', error);
+      setJsonData({ error: "Couldn't get Data Currently" });
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setJsonData(null);
+  };
+
+  const handleCopyJson = () => {
+    const formattedJson = JSON.stringify(jsonData, null, 4);
+    navigator.clipboard.writeText(formattedJson)
+      .then(() => alert('JSON copied to clipboard!'))
+      .catch(err => console.error('Failed to copy JSON', err));
+  };
+
+  const jsonStyle = {
+    propertyStyle: { color: '#3B82F6' },  // Keys in blue
+    stringStyle: { color: '#10B981' },  // Strings in green
+    numberStyle: { color: '#F97316' },  // Numbers in orange
+    booleanStyle: { color: '#D97706' }, // Booleans in yellow
+    nullStyle: { color: '#DC2626' }     // Null in red
+  };
   return (
     <div className="App">
       <header className="header">
         <h1 className="tagline">Ads Classification Tool</h1>
         <Link className="ads-search-tool" to="/ad-search" target="_blank" rel="noopener noreferrer">
           <img src="/hyperlink-icon.png" alt="Hyperlink" className="hyperlink-icon" />
-            Ads Search
-          </Link> 
+          Ads Search
+        </Link>
       </header>
       <div ref={dropdownRef} className={`wholeList ${open ? "wholeList-open" : ''}`}>
         <>
@@ -235,14 +277,14 @@ function App() {
         <Dropdown open={open} toggle={toggelDropdonw} buttonText={DropdownText} />
       </div>
       {statusMessage.message && <div className={statusMessage?.status === 1 ? `status_field_green status_field` : `status_field_orange status_field`}>{statusMessage?.message}
-        {statusMessage.status === 1 && <span className='link' onClick={() => { handleVideoSelect({_id:statusMessage._id, video_path: statusMessage.video_path, status: statusMessage.status }) }}>View Results</span>}
+        {statusMessage.status === 1 && <span className='link' onClick={() => { handleVideoSelect({ _id: statusMessage._id, video_path: statusMessage.video_path, status: statusMessage.status }) }}>View Results</span>}
         {statusMessage.status === 0 && <span className="loading-spinner"><img style={{ width: '100%' }} src="https://flinenergy.com/flin_css_js_font_images/images/loader.gif" alt="Loading..." /></span>}
         <span className="close-button" onClick={() => setStatusMessage({})}>×</span>
       </div>}
       {(analysisData) && (
         <div className="content">
           <div className="video-container">
-            <h3 style={{margin:'5px',fontSize:'2em'}}>Analyzed Video</h3>
+            <h3 style={{ margin: '5px', fontSize: '2em' }}>Analyzed Video</h3>
             <video controls className="video-player" src={videoUrl}>
               <source src={videoUrl} type="video/mp4" />
               Your browser does not support the video tag.
@@ -284,6 +326,15 @@ function App() {
               <h1>Analysis Result :
                 {analysisData && analysisData.hasOwnProperty('start_time') && analysisData.hasOwnProperty('end_time') ? (<> <span className='time_taken'> {((analysisData['end_time'] - analysisData['start_time']).toFixed(2))} Sec</span></>) : (<></>)}
               </h1>
+              <>{analysisData ? (<button
+                className="view-json-button"
+                onClick={handleViewJson}
+              >
+                View VI JSON
+              </button>) : (<></>)
+
+              }
+              </>
 
               {analysisData ? (
                 <>
@@ -350,6 +401,26 @@ function App() {
               ) : (<p>No Results Found</p>)}
             </>
           </div>
+
+
+          {isModalOpen && (
+            <div className="modal-overlay">
+              <div className="modal-content">
+                <h2>Video Intelligence JSON Data</h2>
+                <div className="json-container">
+                <button className="copy-button" onClick={handleCopyJson}>Copy</button>
+                <JsonFormatter
+                json={jsonData} 
+                tabWith={4}
+                jsonStyle={jsonStyle} 
+                />
+                </div>
+                <button onClick={handleCloseModal}>Close</button>
+              </div>
+            </div>
+          )}
+
+
         </div>
       )}
     </div>
