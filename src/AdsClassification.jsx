@@ -225,9 +225,38 @@ function App() {
 
   const handleCopyJson = () => {
     const formattedJson = JSON.stringify(jsonData, null, 4);
+  
+    // Check if the Clipboard API is available
+    if (!navigator.clipboard) {
+      alert('Clipboard API not available. Using fallback method.');
+      copyUsingFallback(formattedJson);
+      return;
+    }
+  
     navigator.clipboard.writeText(formattedJson)
       .then(() => alert('JSON copied to clipboard!'))
       .catch(err => console.error('Failed to copy JSON', err));
+  };
+  
+  const copyUsingFallback = (text) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    
+    textArea.select();
+    
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        alert('JSON copied to clipboard!');
+      } else {
+        alert('Failed to copy JSON.');
+      }
+    } catch (err) {
+      console.error('Failed to copy JSON', err);
+    } finally {
+      document.body.removeChild(textArea);
+    }
   };
 
   const jsonStyle = {
