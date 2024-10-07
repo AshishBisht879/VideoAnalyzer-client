@@ -238,7 +238,7 @@ body {
   justify-content: space-between;
   }
   
-  .status_field .close-button {
+  .status_field .close-button{
     width: 1.8rem;
     height: 1.8rem;
     background-color: #fff;
@@ -299,6 +299,11 @@ body {
     float: right;
     width: auto;
     margin: auto;
+    background-color: #61dafb;
+  }
+
+  .view-json-button:hover {
+    background-color: #21a1f1;
   }
  
 .modal-overlay {
@@ -336,7 +341,7 @@ h2 {
 
 
 .json-container {
-  background-color: #1e1e1e; /* Dark background */
+  background-color: #F0F0F0; /* Dark background */
   color: #d4d4d4; /* Light text color */
   border-radius: 8px;
   padding: 20px;
@@ -345,6 +350,21 @@ h2 {
   font-family: monospace;
   text-align: left; /* Ensure text is left-aligned */
   white-space: pre-wrap; /* Preserve formatting with line breaks and spaces */
+}
+
+.close-json-button {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  cursor: pointer;
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 30px;
+  border: none;
+  background: transparent;
+  color: #787777;
+  padding: 8px;
+  margin: 0;
 }
 
 .copy-button {

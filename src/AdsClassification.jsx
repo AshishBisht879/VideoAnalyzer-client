@@ -260,11 +260,11 @@ function App() {
   };
 
   const jsonStyle = {
-    propertyStyle: { color: '#3B82F6' },  // Keys in blue
-    stringStyle: { color: '#10B981' },  // Strings in green
-    numberStyle: { color: '#F97316' },  // Numbers in orange
-    booleanStyle: { color: '#D97706' }, // Booleans in yellow
-    nullStyle: { color: '#DC2626' }     // Null in red
+    propertyStyle: { color: '#2E86C1' },  // Keys in blue
+    stringStyle: { color: '#27AE60' },  // Strings in green
+    numberStyle: { color: '#D35400' },  // Numbers in orange
+    booleanStyle: { color: '#8E44AD' }, // Booleans in yellow
+    nullStyle: { color: '#E74C3C' }     // Null in red
   };
   return (
     <div className="App">
@@ -359,7 +359,7 @@ function App() {
                 className="view-json-button"
                 onClick={handleViewJson}
               >
-                View VI JSON
+                View JSON
               </button>) : (<></>)
 
               }
@@ -435,6 +435,7 @@ function App() {
           {isModalOpen && (
             <div className="modal-overlay">
               <div className="modal-content">
+              <span className="close-json-button" onClick={handleCloseModal}>×</span>
                 <h2>Video Intelligence JSON Data</h2>
                 <div className="json-container">
                 <button className="copy-button" onClick={handleCopyJson}>Copy</button>
@@ -444,7 +445,6 @@ function App() {
                 jsonStyle={jsonStyle} 
                 />
                 </div>
-                <button onClick={handleCloseModal}>Close</button>
               </div>
             </div>
           )}
